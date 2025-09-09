@@ -1,8 +1,16 @@
+import { db } from '../db';
+import { officesTable } from '../db/schema';
 import { type Office } from '../schema';
 
-export async function getOffices(): Promise<Office[]> {
-  // This is a placeholder declaration! Real code should be implemented here.
-  // The goal of this handler is fetching all available medical offices from the database.
-  // This will populate the office dropdown/selector in the UI.
-  return Promise.resolve([]);
-}
+export const getOffices = async (): Promise<Office[]> => {
+  try {
+    const results = await db.select()
+      .from(officesTable)
+      .execute();
+
+    return results;
+  } catch (error) {
+    console.error('Failed to fetch offices:', error);
+    throw error;
+  }
+};

@@ -1,13 +1,24 @@
+import { db } from '../db';
+import { officesTable } from '../db/schema';
 import { type CreateOfficeInput, type Office } from '../schema';
 
-export async function createOffice(input: CreateOfficeInput): Promise<Office> {
-  // This is a placeholder declaration! Real code should be implemented here.
-  // The goal of this handler is creating a new medical office and persisting it in the database.
-  // This will be used by administrators to add new offices to the predefined list.
-  return Promise.resolve({
-    id: 0, // Placeholder ID
-    name: input.name,
-    created_at: new Date(),
-    updated_at: new Date()
-  } as Office);
-}
+export const createOffice = async (input: CreateOfficeInput): Promise<Office> => {
+  try {
+    // Insert office record
+    const result = await db.insert(officesTable)
+      .values({
+        name: input.name
+      })
+      .returning()
+      .execute();
+
+    // Return the created office
+    const office = result[0];
+    return {
+      ...office
+    };
+  } catch (error) {
+    console.error('Office creation failed:', error);
+    throw error;
+  }
+};
